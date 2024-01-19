@@ -17,7 +17,7 @@ public class ForgeEventHandler {
     {
 
 
-        if (!HarvestBlockHandler.canHarvest(event.getState(), event.getPlayer()))
+        if (!HarvestBlockHandler.canBreak(event.getState(), event.getPlayer()))
         {
             float newSpeed = 1e-10f;
             event.setNewSpeed(newSpeed);

@@ -1,18 +1,30 @@
 package com.bobigrenade.ahtweaks.util;
 
+import com.bobigrenade.ahtweaks.AHTweaksConfig;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.util.ResourceLocation;
+
+import java.util.List;
 
 public class HarvestBlockHandler {
     
-    public static boolean canHarvest(BlockState state, PlayerEntity player)
+    public static boolean canBreak(BlockState state, PlayerEntity player)
     {
-        Block block = state.getBlock();
-        boolean is_wooden = block.isIn(BlockTags.LOGS) || block.isIn(BlockTags.WOODEN_STAIRS) || block.isIn(BlockTags.WOODEN_SLABS) || block.isIn(BlockTags.WOODEN_FENCES) || block.isIn(BlockTags.PLANKS);
+        boolean can_break = true;
 
-        return !is_wooden;
+        Block block = state.getBlock();
+        List<String> tag_whitelist = AHTweaksConfig.blockTagWhitelist.get();
+
+        for (String tag: tag_whitelist)
+            if (block.getTags().contains(new ResourceLocation(tag))){
+                can_break = false;
+                break;
+            }
+
+        return can_break;
     }
 
 }
