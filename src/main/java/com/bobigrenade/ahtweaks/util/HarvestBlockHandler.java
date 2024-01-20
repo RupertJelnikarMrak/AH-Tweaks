@@ -9,27 +9,50 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
 
-import java.util.List;
-
 public class HarvestBlockHandler {
     public static final ToolType SWORD = ToolType.get("sword");
 
 
     public static boolean canBreak(BlockState state, PlayerEntity player)
     {
-        boolean can_break = true;
         ItemStack held_item = player.getHeldItemMainhand();
 
         Block block = state.getBlock();
-        List<String> tag_whitelist = AHTweaksConfig.blockTagWhitelist.get();
 
-        for (String tag: tag_whitelist)
-            if (block.getTags().contains(new ResourceLocation(tag))){
-                can_break = canHarvestWithTool(state, player, held_item);
-                break;
+        if (AHTweaksConfig.isBlacklist.get())
+        {
+            for (String entry : AHTweaksConfig.blockList.get())
+            {
+                if (entry.startsWith("%"))
+                {
+                    if (block.getTags().contains(new ResourceLocation(entry.replaceFirst("%", ""))))
+                        return true;
+                }
+                else
+                {
+                    if (block.getRegistryName().toString().equals(entry))
+                        return true;
+                }
             }
-
-        return can_break;
+            return canHarvestWithTool(state, player, held_item);
+        }
+        else
+        {
+            for (String entry : AHTweaksConfig.blockList.get())
+            {
+                if (entry.startsWith("%"))
+                {
+                    if (block.getTags().contains(new ResourceLocation(entry.replaceFirst("%", ""))))
+                        return canHarvestWithTool(state, player, held_item);
+                }
+                else
+                {
+                    if (block.getRegistryName().toString().equals(entry))
+                        return canHarvestWithTool(state, player, held_item);
+                }
+            }
+            return true;
+        }
     }
 
     private static boolean canHarvestWithTool(BlockState state, PlayerEntity player, ItemStack item_stack)

@@ -2,6 +2,7 @@ package com.bobigrenade.ahtweaks;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -15,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 public class AHTweaks
 {
     public static final String MOD_ID = "ahtweaks";
+    public static boolean firstAidIsLoaded = false;
 
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
@@ -28,6 +30,9 @@ public class AHTweaks
 
         ModLoadingContext.get().registerConfig(Type.COMMON, AHTweaksConfig.spec, "AHTweaks-common.toml");
 
+        if (ModList.get().isLoaded("firstaid"))
+            firstAidIsLoaded = true;
+            
         MinecraftForge.EVENT_BUS.register(this);
     }
 
