@@ -19,47 +19,61 @@ public class HarvestBlockHandler {
 
         Block block = state.getBlock();
 
-        if (AHTweaksConfig.isBlacklist.get())
+        // Check if the block is blacklisted
+        for (String entry : AHTweaksConfig.blackList.get())
         {
-            for (String entry : AHTweaksConfig.blockList.get())
+            if (entry.startsWith("#"))
             {
-                if (entry.startsWith("%"))
-                {
-                    if (block.getTags().contains(new ResourceLocation(entry.replaceFirst("%", ""))))
-                        return true;
-                }
-                else
-                {
-                    if (block.getRegistryName().toString().equals(entry))
-                        return true;
+                if (block.getTags().contains(new ResourceLocation(entry.replaceFirst("#", "")))){
+                    return true;
                 }
             }
-            return canHarvestWithTool(state, player, held_item);
-        }
-        else
-        {
-            for (String entry : AHTweaksConfig.blockList.get())
+            else if (entry.startsWith("@"))
             {
-                if (entry.startsWith("%"))
-                {
-                    if (block.getTags().contains(new ResourceLocation(entry.replaceFirst("%", ""))))
-                        return canHarvestWithTool(state, player, held_item);
-                }
-                else
-                {
-                    if (block.getRegistryName().toString().equals(entry))
-                        return canHarvestWithTool(state, player, held_item);
+                if (block.getRegistryName().toString().equals(entry.replaceFirst("@", "").split(":")[0])){
+                    return true;
                 }
             }
-            return true;
+            else
+            {
+                if (block.getRegistryName().toString().equals(entry)){
+                    return true;
+                }
+            }
         }
+
+        // Check if the block is whitelisted, if they are, do a different check whether the player is holding the right tool, not just if the block would drop
+        for (String entry : AHTweaksConfig.whiteList.get())
+        {
+            if (entry.startsWith("#"))
+            {
+                if (block.getTags().contains(new ResourceLocation(entry.replaceFirst("#", "")))){
+                    return held_item.getToolTypes().contains(state.getHarvestTool());
+                }
+            }
+            else if (entry.startsWith("@"))
+            {
+                if (block.getRegistryName().toString().equals(entry.replaceFirst("@", "").split(":")[0])){
+                    return held_item.getToolTypes().contains(state.getHarvestTool());
+                }
+            }
+            else
+            {
+                if (block.getRegistryName().toString().equals(entry)){
+                    return held_item.getToolTypes().contains(state.getHarvestTool());
+                }
+            }
+        }
+
+        // If no overrides are set, check if the block would drop when mined by player to decide wheter it is breakable or not
+        return state.canHarvestBlock(null, null, player);
     }
 
-    private static boolean canHarvestWithTool(BlockState state, PlayerEntity player, ItemStack item_stack)
-    {
-        return item_stack.getToolTypes().contains(state.getHarvestTool());
-       
-        // *TODO: Add special checks for modded tools and levels
-    }
+    //private static boolean canHarvestWithTool(BlockState state, PlayerEntity player)
+    //{
+    //    return state.canHarvestBlock(null, null, player);
+    //   
+    //     *TODO: Add special checks for modded tools and levels
+    //}
 
 }

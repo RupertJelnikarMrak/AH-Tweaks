@@ -11,8 +11,8 @@ public class AHTweaksConfig {
     public static final ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec spec;
 
-    public static final ForgeConfigSpec.ConfigValue<List<String>> blockList;
-    public static final ForgeConfigSpec.BooleanValue isBlacklist;
+    public static final ForgeConfigSpec.ConfigValue<List<String>> whiteList;
+    public static final ForgeConfigSpec.ConfigValue<List<String>> blackList;
     public static final ForgeConfigSpec.BooleanValue unbreakableBlocks;
     public static final ForgeConfigSpec.BooleanValue damagePlayer;
     public static final ForgeConfigSpec.ConfigValue<Integer> damageTick;
@@ -21,12 +21,12 @@ public class AHTweaksConfig {
 
         builder.comment("AH Tweaks Configuration").push("common");
             builder.comment("Settings related to affected blocks").push("AffectedBlocks");
-            blockList = builder
-                .comment("List of block tags that will be affected by this mod \nUse '%' before tags like so [\"%minecraft:logs\", \"minecraft:oak_planks\"]")
-                .define("Affected Blocks List", Arrays.asList());
-            isBlacklist = builder
-                .comment("If true, all blocks except the ones listed will be affected \nDefault: true")
-                .define("Is Black List", true);
+            whiteList = builder
+                .comment("List of block tags that will always require the right tool to be used, even if they are harvestable without tools \nUse '#' before tags and '@' before mods like so [\"minecraft:oak_log\", \"#minecraft:logs\", \"@iceandfire\"]")
+                .define("Whitelist", Arrays.asList("#minecraft:logs", "#minecraft:planks"));
+            blackList = builder
+                .comment("List of block tags that will never be affected by this mod \nUse '#' before tags and '@' before mods like so [\"minecraft:oak_log\", \"#minecraft:logs\", \"@iceandfire\"]")
+                .define("Blacklist", Arrays.asList());
         builder.pop();
 
         builder.comment("Settings related to breaking blocks").push("BreakingBlocks");
