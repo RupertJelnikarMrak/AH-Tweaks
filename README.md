@@ -1,5 +1,7 @@
 ﻿# AH Tweaks
 
+### This is a small mod made for the [Arcane Horizons: The Lost World](curseforge.com/minecraft/modpacks/arcane-horizons-the-lost-world) mod-pack
+
 ### Current Features:
 **Better Punching:**
 Adds a configurable list of block tags to make certain blocks unbreakable without correct tool or even damage the player. (Similar to how No Tree Punching used to work back in 1.12.2)
